@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+    body {
+        padding: 20px;
+        background-color: 		#f2f2f2;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 6px 12px; /* Adjust button padding */
+        margin-top: 10px;
+    }
+
+    .dashboard-container {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 60px;
+    }
+
+    .dashboard-column {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+       margin-bottom: 0px; /* Adjust margin for list items */
+        display: flex; /* Display items and buttons in a row */
+        align-items: center; /* Align items and buttons vertically */
+        font-size: 14px; /* Adjust font size for list items */
+    }
+
+    form {
+        margin: 0; /* Remove margin for the form */
+    }
+
+    .dashboard-buttons form {
+        display: inline-block;
+        margin-left: 10px;
+        margin-bottom: 10px;
+}
+
+    .dashboard-buttons button {
+    margin: 0;
+    font-size: 10px; /* Adjust font size */
+}
+
+.dashboard-buttons {
+
+     justify-content: flex-end; /
+}
+
+.add-selected-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px -5px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow at the bottom */
+    display: flex;
+    justify-content: flex-end; /* Align the button to the right within the bar */
+}
+
+/* Adjust button style inside the "Add Selected" bar */
+.add-selected-bar button {
+    margin: 0;
+    font-size: 14px; /* Adjust font size as needed */
+}
+
+.dropdown-content {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+}
+
+.selected-row {
+    background-color: #e0e0e0 ; /* Or any color to indicate selection */
+}
+
+.product-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.product-table th, .product-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.product-table img {
+    width: 50px; /* Adjust as needed */
+    height: auto;
+}
+
+.product-table td div {
+    margin-bottom: 5px; /* Space between size-quantity pairs */
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+    <h1>Products</h1>
+<!--       <form action="/mass_ugg" method="post">-->
+<!--    <label for="ids">Enter ID Range (e.g 2-10):</label>-->
+<!--    <input type="text" id="ids" name="ids" required>-->
+
+<!--    &lt;!&ndash; Button for individual tracking &ndash;&gt;-->
+<!--    <button type="submit" name="action" value="refresh_mass" class="btn btn-primary">Refresh Order</button>-->
+
+<!--    &lt;!&ndash; Button for mass tracking &ndash;&gt;-->
+<!--    <button type="submit" name="action" value="mass_track" class="btn btn-primary">Add Tracking</button>-->
+
+<!--           <button type="submit" name="action" value="display" class="btn btn-primary">Display Items</button>-->
+<!--</form>-->
+
+    <div class="product-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Size & Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prod in products %}
+                <tr>
+                    <td>
+                        <img src="{{ prod.image_link }}" alt="Product Image" style="width: 50px; height: auto;">
+                    </td>
+                    <td>
+                        {{ prod.gender }} {{ prod.color }} {{ prod.item_name }}
+                    </td>
+                    <td>
+                        {% for size, quantity in prod.sizes.items() %}
+                        <div>Size {{ size }}: <strong>{{ quantity }}</strong></div>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if show_alert %}
+    <script>
+        // Display the alert when the page loads
+        alert("{{ show_alert }}");
+    </script>
+    {% endif %}
+
+</body>
+
+</html>

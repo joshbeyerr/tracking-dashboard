@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+    body {
+        padding: 20px;
+        background-color: 		#f2f2f2;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 6px 12px; /* Adjust button padding */
+        margin-top: 10px;
+    }
+
+    .dashboard-container {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 60px;
+    }
+
+    .dashboard-column {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+       margin-bottom: 0px; /* Adjust margin for list items */
+        display: flex; /* Display items and buttons in a row */
+        align-items: center; /* Align items and buttons vertically */
+        font-size: 14px; /* Adjust font size for list items */
+    }
+
+    form {
+        margin: 0; /* Remove margin for the form */
+    }
+
+          .tracking-item {
+        background: #fff;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        padding: 6px; /* Reduced padding */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.75rem; /* Even smaller font size for the content */
+    }
+
+        .tracking-item strong {
+            margin-right: 5px;
+            white-space: nowrap; /* Ensure tracking number does not wrap */
+        }
+
+        .dashboard-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-buttons form,
+        .dashboard-buttons button {
+            margin: 0 2px; /* Reduced margin between buttons */
+            padding: 2px 6px; /* Smaller padding for buttons */
+        }
+
+        /* Additional styles for copy button */
+        .copy-button {
+            background-color: #17a2b8;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 2px 6px;
+            margin-left: 5px;
+        }
+          .buttons-main {
+        padding: 0.25rem 0.75rem; /* Smaller padding for buttons */
+        font-size: 0.7rem; /* Smaller font size for text within buttons */
+        line-height: 1; /* Adjust line height to align with smaller font */
+    }
+
+</style>
+
+</head>
+
+<body>
+
+    <h1>Tracking Dashboard</h1>
+
+    <form action="/add" method="post">
+        <label for="tracking_number">Enter Tracking Number:</label>
+        <input type="text" id="tracking_number" name="tracking_number" required>
+        <button type="submit" class="btn btn-primary">Add Tracking</button>
+    </form>
+
+    <div class="dashboard-container">
+
+         <div class="dashboard-column">
+            <h2>On the Way</h2>
+            {% for item in tracking_data_transit %}
+            <div class="tracking-item">
+                <span>
+                    <strong>{{ item.tracking }}</strong>: {{ item.recent }}
+                </span>
+                <div class="buttons-main">
+
+                    <form action="/moreInfo/{{ item.id }}" method="get" class="d-inline">
+                        <button type="submit" class="btn btn-info">Info</button>
+                    </form>
+                    <form action="/delete/{{ item.id }}" method="get" class="d-inline">
+                        <button type="submit" class="btn btn-danger">X</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+         <div class="dashboard-column">
+            <h2>Delivered</h2>
+            {% for item in tracking_data_delivered %}
+            <div class="tracking-item">
+                <span>
+                    <strong>{{ item.tracking }}</strong>: {{ item.recent }}
+                </span>
+                <div>
+<!--                    <div class="buttons-main">-->
+                    <form action="/moreInfo/{{ item.id }}" method="get" class="d-inline">
+                        <button type="submit" class="btn btn-info">Info</button>
+                    </form>
+<!--                        </div>-->
+                    <form action="/delete/{{ item.id }}" method="get" class="d-inline">
+                        <button type="submit" class="btn btn-danger">X</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    </div>
+
+    {% if show_alert %}
+    <script>
+        // Display the alert when the page loads
+        alert("{{ show_alert }}");
+    </script>
+    {% endif %}
+
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+/* styles.css */
+
+/* Apply margin to list items */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px; /* Adjust the value as needed */
+}

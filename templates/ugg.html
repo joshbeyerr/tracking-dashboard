@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+    body {
+        padding: 20px;
+        background-color: 		#f2f2f2;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    form {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 6px 12px; /* Adjust button padding */
+        margin-top: 10px;
+    }
+
+    .dashboard-container {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 60px;
+    }
+
+    .dashboard-column {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+       margin-bottom: 0px; /* Adjust margin for list items */
+        display: flex; /* Display items and buttons in a row */
+        align-items: center; /* Align items and buttons vertically */
+        font-size: 14px; /* Adjust font size for list items */
+    }
+
+    form {
+        margin: 0; /* Remove margin for the form */
+    }
+
+    .dashboard-buttons form {
+        display: inline-block;
+        margin-left: 10px;
+        margin-bottom: 10px;
+}
+
+    .dashboard-buttons button {
+    margin: 0;
+    font-size: 10px; /* Adjust font size */
+}
+
+.dashboard-buttons {
+
+     justify-content: flex-end; /
+}
+
+.add-selected-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px -5px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow at the bottom */
+    display: flex;
+    justify-content: flex-end; /* Align the button to the right within the bar */
+}
+
+/* Adjust button style inside the "Add Selected" bar */
+.add-selected-bar button {
+    margin: 0;
+    font-size: 14px; /* Adjust font size as needed */
+}
+
+.dropdown-content {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+}
+
+.selected-row {
+    background-color: #e0e0e0 ; /* Or any color to indicate selection */
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+    <h1>Ugg Orders</h1>
+       <form action="/mass_ugg" method="post">
+    <label for="ids">Enter ID Range (e.g 2-10):</label>
+    <input type="text" id="ids" name="ids" required>
+
+    <!-- Button for individual tracking -->
+    <button type="submit" name="action" value="refresh_mass" class="btn btn-primary">Refresh Order</button>
+
+    <!-- Button for mass tracking -->
+    <button type="submit" name="action" value="mass_track" class="btn btn-primary">Add Tracking</button>
+
+           <button type="submit" name="action" value="display" class="btn btn-primary">Display Items</button>
+</form>
+
+    <div class="dashboard-container">
+
+        <div class="dashboard-column">
+                <ul>
+                       {% for order in ugg_orders %}
+   <div class="card mb-2 selectable-row">
+    <input type="checkbox" class="row-checkbox" id="checkbox{{ order.id }}" style="display: none;">
+    <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <small>ID: <strong>{{ order.id }}</strong></small>
+                </div>
+                <div class="col-5">
+                    <small>{{ order.date }}</small> -
+                    <small><strong>{{ order.orderNumber }}</strong></small>
+
+                </div>
+                <div class="col-2">
+                    {% if order.status %}
+                        {% set status_lower = order.status.lower() %}
+                        {% if status_lower in ['processing', 'shipped', 'delivered'] %}
+                            <span class="badge bg-success">{{ order.status }}</span>
+                        {% elif status_lower == 'backorder' %}
+                            <span class="badge bg-warning">{{ order.status }}</span>
+                        {% elif status_lower == 'canceled' %}
+                            <span class="badge bg-danger">{{ order.status }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ order.status }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge bg-secondary">None</span>
+                    {% endif %}
+                </div>
+                <div class="col-2 text-right">
+                    <form action="/add" method="post" class="d-inline">
+                        <input type="hidden" name="tracking_number" value="{{ order.tracking }}">
+                        <button type="submit" class="btn btn-info btn-sm">+</button>
+                    </form>
+
+                    <form action="/reload" method="post" class="d-inline">
+                        <input type="hidden" name="refresh" value="{{ order.orderNumber }}">
+                        <button type="submit" class="btn btn-info btn-sm">⟳</button>
+                    </form>
+
+<!--                    <button class="btn btn-info btn-sm" onclick="copyToClipboard('trackingNumber{{ order.tracking }}')">Copy</button>-->
+                    <button class="btn btn-info btn-sm" onclick="toggleDropdown('dropdown{{ order.id }}')">Info</button>
+                    <div id="dropdown{{ order.id }}" class="dropdown-content" style="display: none;">
+                    <p>Tracking Number: {{ order.tracking }}</p>
+                    <!-- Add more tracking info here if needed -->
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+                </ul>
+
+        </div>
+
+    </div>
+
+<!--     <div class="add-selected-bar">-->
+<!--        <form action="/add-multiple" method="post">-->
+<!--            <button type="submit" class="btn btn-primary">Add Selected Items</button>-->
+<!--        </form>-->
+<!--    </div>-->
+
+    {% if show_alert %}
+    <script>
+        // Display the alert when the page loads
+        alert("{{ show_alert }}");
+    </script>
+    {% endif %}
+
+</body>
+
+</html>
+
+<script>
+    function toggleDropdown(dropdownId) {
+        var dropdown = document.getElementById(dropdownId);
+        if (dropdown.style.display === "none") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.selectable-row').forEach(function(row) {
+            row.addEventListener('click', function(event) {
+                // Ignore if the click is on a button
+                if (event.target.tagName === 'BUTTON') return;
+
+                // Toggle the checkbox state
+                var checkbox = this.querySelector('.row-checkbox');
+                checkbox.checked = !checkbox.checked;
+
+                // Toggle row selection style
+                if (checkbox.checked) {
+                    this.classList.add('selected-row');
+                } else {
+                    this.classList.remove('selected-row');
+                }
+            });
+        });
+    });
+
+    // Function to perform actions on selected items
+    function performMassAction() {
+        var selectedItems = [];
+        document.querySelectorAll('.row-checkbox:checked').forEach(function(checkbox) {
+            selectedItems.push(checkbox.id.replace('checkbox', ''));
+        });
+        // Now you have an array of selected item IDs
+        // Add your logic here to perform actions on these items
+    }
+</script>
