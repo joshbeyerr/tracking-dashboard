@@ -1,4 +1,5 @@
 import requests
+
 from flask import Flask, render_template, request, redirect, url_for
 from track import allShipments, search, shipment, mass_search
 from sites.ugg_sql import *
@@ -10,7 +11,6 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 app = Flask(__name__)
 
@@ -91,7 +91,7 @@ def ugg(alert=None):
     logger.info("here")
 
     return render_template('ugg.html',
-                          ugg_orders=all_orders, show_alert=alert)
+                           ugg_orders=all_orders, show_alert=alert)
 
 
 def ugg_reload_helper(order_num):
@@ -148,7 +148,6 @@ def mass_ugg(alert=None):
 
     elif action == 'display':
         prods = [item for x in selected if x.products for item in json.loads(x.products) if item['item_name']]
-
 
         print(prods)
 

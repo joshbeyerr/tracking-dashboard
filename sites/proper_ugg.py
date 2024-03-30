@@ -25,28 +25,6 @@ def spec(order):
 
     soup = BeautifulSoup(response0.text, 'html.parser')
     tracking_number = soup.findAll('span', {'class': 'summary-details'})
-    # tracking_headers = soup.findAll('span', {'class': 'summary-section-label'})
-    # tracking_headers.pop(2)
-    #
-    # print(tracking_number)
-    # print(tracking_headers)
-    # print(len(tracking_number))
-    # print(len(tracking_headers))
-    # # quit()
-    #
-    # dictt = {'shipments': []}
-    # temp = {}
-    # shipment = 0
-    # for x, y in zip(tracking_headers, tracking_number):
-    #     header = x.text.strip("\n")
-    #     if header == 'Order Status':
-    #
-    #
-    #     dictt[header] = y.text.strip("\n")
-    #
-    # print(dictt)
-    # quit()
-
 
     orderInfo = {'date': (tracking_number[0]).text.strip("\n")}
 
@@ -69,8 +47,7 @@ def spec(order):
             product_info['gender'] = attributes[0].get_text()
             product_info['color'] = attributes[1].get_text().split(': ')[1]
             product_info['size'] = attributes[2].get_text().split(': ')[1]
-            # availability_info = soup.find('div', class_='availability-type-backorder').get_text(strip=True)
-            # product_info['status'], product_info['expected_delivery'] = availability_info.split(' - ')
+
             return product_info
 
         extracted_info = []
@@ -97,5 +74,3 @@ def spec(order):
 
     return orderInfo
 
-
-# spec('https://www.ugg.com/ca/orders/summary/?token=NA22732678%26QkRcsQOF')

@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import html_to_json
 from ugg_sql import *
+import os
+from dotenv import load_dotenv
 
 
 def login():
@@ -52,13 +54,15 @@ def login():
         'accept-language': 'en-US,en;q=0.9',
     }
 
+    load_dotenv()
+
     s.cookies.update({
-        "forterToken": "b51e2a6a9c0b406ca98c48d4e3375d6e_1701294095711__UDF43-m4_6"
+        "forterToken": os.environ.get('FORTER')
     })
 
     payload = {
-        "loginEmail": "joshuabeyer2@gmail.com",
-        "loginPassword": "Jb021103@",
+        "loginEmail": os.environ.get('UGGLOGIN'),
+        "loginPassword": os.environ.get('UGGPASSWORD'),
         "csrf_token": str(csrf)
     }
 
@@ -239,23 +243,4 @@ while count <= 64:
                 sizes[prod[0]['size']] += int(prod[0]['quantity'])
     count += 1
 
-print(sizes)
-quit()
-# for i in d:
-#     print(get_order_info(i))
 
-safe_save_all_info()
-quit()
-
-quit()
-# main()
-# quit()
-
-# Find all order numbers
-create_table()
-d = get_all_order_numbers()
-for i in d:
-    print(get_order_info(i))
-quit()
-
-# print(d)

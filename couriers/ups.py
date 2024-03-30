@@ -4,6 +4,8 @@ from adi_tracking.couriers.ups_sql import *
 import time
 import threading
 import requests
+import os
+from dotenv import load_dotenv
 
 
 token_lock = threading.Lock()
@@ -21,7 +23,9 @@ def accessToken():
         "x-merchant-id": "string"
     }
 
-    auth = 'L3VJg5LoUdGBpgPAK8opxQ2SdNOZWfni4aIudjeeAtLPeLqT', 'Gi7RYlLY2A0L997HLTCUeXWTJQMiGJtthnhHof9PswB0WHILKOLdULv8ufGSoWr3'
+    load_dotenv()
+
+    auth = os.environ.get('UPSAUTH1'), os.environ.get('UPSAUTH2')
 
     response = requests.post(url, data=payload, headers=headers, auth=auth)
 
@@ -36,9 +40,10 @@ def refresh(ref_token):
         "grant_type": "refresh_token",
         "refresh_token": ref_token
     }
+    load_dotenv()
 
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    auth = 'L3VJg5LoUdGBpgPAK8opxQ2SdNOZWfni4aIudjeeAtLPeLqT', 'Gi7RYlLY2A0L997HLTCUeXWTJQMiGJtthnhHof9PswB0WHILKOLdULv8ufGSoWr3'
+    auth = os.environ.get('UPSAUTH1'), os.environ.get('UPSAUTH2')
 
     response = requests.post(url, data=payload, headers=headers, auth=auth)
 
